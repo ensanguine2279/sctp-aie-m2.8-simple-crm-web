@@ -29,9 +29,12 @@ function App() {
           <Route path="app" element={<RootLayout />}>
             <Route index element={<DashboardPage />} />
             <Route path="customers" element={<CustomersPage />} />
-            <Route path="customers/new" element={<NewCustomerPage />} />
             <Route path="customers/:id" element={<CustomerDetailPage />} />
-            <Route path="customers/:id/edit" element={<EditCustomerPage />} />
+
+            <Route element={<ProtectedRoute requiredRole={"admin"} />}>
+              <Route path="customers/new" element={<NewCustomerPage />} />
+              <Route path="customers/:id/edit" element={<EditCustomerPage />} />
+            </Route>
           </Route>
         </Route>
 

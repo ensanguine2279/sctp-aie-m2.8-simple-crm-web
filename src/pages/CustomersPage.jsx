@@ -1,6 +1,7 @@
 // src/pages/CustomersPage.jsx
 import { Link, useNavigate } from "react-router";
 
+import { useAuth } from "../contexts/AuthContextInstance";
 import { useCustomers } from "../contexts/CustomerContextInstance";
 
 import CustomerCard from "../components/CustomerCard";
@@ -19,6 +20,8 @@ function CustomersPage() {
     setStatusFilter,
   } = useCustomers();
 
+  const { hasRole } = useAuth();
+
   const navigate = useNavigate();
 
   if (loading) return <Spinner />;
@@ -28,9 +31,11 @@ function CustomersPage() {
     <div>
       <div className="page-header">
         <h1>Customers</h1>
-        <Link to="/app/customers/new" className="btn-primary-link">
-          Add Customer
-        </Link>
+        {hasRole("admin") && (
+          <Link to="/app/customers/new" className="btn-primary-link">
+            Add Customer
+          </Link>
+        )}
       </div>
 
       <StatusFilter
@@ -55,6 +60,7 @@ function CustomersPage() {
                 key={customer.id}
                 customer={customer}
                 onSelect={(id) => navigate(`/app/customers/${id}`)}
+                searchTerm={searchTerm}
               />
             ))}
           </div>

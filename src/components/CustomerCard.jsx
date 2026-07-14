@@ -1,4 +1,5 @@
 // src/components/CustomerCard.jsx
+import { useAuth } from "../contexts/AuthContextInstance";
 import { useCustomers } from "../contexts/CustomerContextInstance";
 
 import PropTypes from "prop-types";
@@ -35,7 +36,8 @@ function highlightText(text, search) {
   );
 }
 
-function CustomerCard({ customer, onSelect, isSelected, searchTerm }) {
+function CustomerCard({ customer, onSelect, searchTerm }) {
+  const { hasRole } = useAuth();
   const { deleteCustomer, deletingId } = useCustomers();
 
   const { firstName, lastName, email, phone, status, tags } = customer;
@@ -80,16 +82,18 @@ function CustomerCard({ customer, onSelect, isSelected, searchTerm }) {
           ))}
         </div>
 
-        <button
-          className={styles.deleteButton}
-          onClick={(e) => {
-            e.stopPropagation();
-            deleteCustomer(customer);
-          }}
-          disabled={isDeleting}
-        >
-          {isDeleting ? "Deleting..." : "Delete"}
-        </button>
+        {hasRole("admin") && (
+          <button
+            className={styles.deleteButton}
+            onClick={(e) => {
+              e.stopPropagation();
+              deleteCustomer(customer);
+            }}
+            disabled={isDeleting}
+          >
+            {isDeleting ? "Deleting..." : "Delete"}
+          </button>
+        )}
       </div>
     </div>
   );
@@ -106,9 +110,7 @@ CustomerCard.propTypes = {
     tags: PropTypes.arrayOf(PropTypes.string).isRequired,
   }).isRequired,
   onSelect: PropTypes.func.isRequired,
-  isSelected: PropTypes.bool.isRequired,
   searchTerm: PropTypes.string,
-  deletingId: PropTypes.string.isRequired,
 };
 
 export default CustomerCard;
