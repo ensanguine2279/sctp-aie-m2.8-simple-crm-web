@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router";
 
+import { useAuth } from "../contexts/AuthContextInstance";
 import { useCustomers } from "../contexts/CustomerContextInstance";
 
 import { API_BASE } from "../App";
@@ -13,6 +14,8 @@ import styles from "./CustomerDetailPage.module.css";
 function CustomerDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+
+  const { hasRole } = useAuth();
   const { deleteCustomer } = useCustomers();
 
   const [customer, setCustomer] = useState(null);
@@ -118,9 +121,11 @@ function CustomerDetailPage() {
         <p className={styles.contactRow}>{customer.createdAt}</p>
       </div>
 
-      <button className={styles.deleteButton} onClick={handleDelete}>
-        Delete Customer
-      </button>
+      {hasRole("admin") && (
+        <button className={styles.deleteButton} onClick={handleDelete}>
+          Delete Customer
+        </button>
+      )}
     </div>
   );
 }
