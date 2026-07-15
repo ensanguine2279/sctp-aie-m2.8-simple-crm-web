@@ -1,5 +1,6 @@
 // src/contexts/CustomerContext.jsx
 import { useReducer, useState, useEffect } from "react";
+import { useSearchParams } from "react-router";
 
 import { useAuth } from "./AuthContextInstance";
 import { CustomerContext } from "./CustomerContextInstance";
@@ -14,8 +15,19 @@ export function CustomerProvider({ children }) {
   const [state, dispatch] = useReducer(customerReducer, initialState);
   const { customers, listLoading, adding, deletingId, error } = state;
 
+  const [searchParams, setSearchParams] = useSearchParams();
+  const searchTerm = searchParams.get("search") || "";
+  const setSearchTerm = (newTerm) => {
+    if (newTerm) {
+      // If there is text in the search bar, update the URL parameter
+      setSearchParams({ search: newTerm });
+    } else {
+      // If the search bar is cleared, remove the parameter completely to keep the URL clean
+      setSearchParams({});
+    }
+  };
+
   // Independent UI state
-  const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortField, setSortField] = useState("");
   const [sortDirection, setSortDirection] = useState("asc"); // "asc" or "desc"

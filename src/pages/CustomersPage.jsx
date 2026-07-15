@@ -10,15 +10,7 @@ import StatusFilter from "../components/StatusFilter";
 import Spinner from "../components/Spinner";
 
 function CustomersPage() {
-  const {
-    filteredCustomers,
-    loading,
-    error,
-    searchTerm,
-    statusFilter,
-    setSearchTerm,
-    setStatusFilter,
-  } = useCustomers();
+  const { filteredCustomers, loading, error, searchTerm } = useCustomers();
 
   const { hasRole } = useAuth();
 
@@ -38,12 +30,9 @@ function CustomersPage() {
         )}
       </div>
 
-      <StatusFilter
-        currentStatus={statusFilter}
-        onStatusChange={setStatusFilter}
-      />
+      <StatusFilter />
 
-      <SearchBar searchTerm={searchTerm} onSearch={setSearchTerm} />
+      <SearchBar />
 
       <div className="customer-list">
         <h2>Customers ({filteredCustomers.length})</h2>
