@@ -1,18 +1,27 @@
 // src/pages/LoginPage.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router";
+
 import { useAuth } from "../contexts/AuthContextInstance";
 import { USERS } from "../data/users";
+
 import styles from "./LoginPage.module.css";
 
 function LoginPage() {
-  const { login } = useAuth();
+  const { user, login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // If the user object is present, they are already logged in
+    if (user) {
+      navigate("/app", { replace: true }); // 'replace: true' prevents them from clicking 'back' to the login form
+    }
+  }, [user, navigate]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
