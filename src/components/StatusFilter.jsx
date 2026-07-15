@@ -1,23 +1,25 @@
 // src/components/StatusFilter.jsx
-import PropTypes from "prop-types";
+import { useCustomers } from "../contexts/CustomerContextInstance";
 
 import styles from "./StatusFilter.module.css";
 
-function StatusFilter({ currentStatus, onStatusChange }) {
+function StatusFilter() {
   const statuses = ["all", "active", "inactive"];
+
+  const { statusFilter, setStatusFilter } = useCustomers();
 
   return (
     <div className={styles.filterContainer}>
       <span className={styles.label}>Status:</span>
 
       {statuses.map((status) => {
-        const isActive = currentStatus === status;
+        const isActive = statusFilter === status;
 
         return (
           <button
             key={status}
             type="button"
-            onClick={() => onStatusChange(status)}
+            onClick={() => setStatusFilter(status)}
             className={`${styles.filterButton} ${isActive ? styles.activeButton : ""}`}
           >
             {status}
@@ -27,10 +29,5 @@ function StatusFilter({ currentStatus, onStatusChange }) {
     </div>
   );
 }
-
-StatusFilter.propTypes = {
-  currentStatus: PropTypes.string.isRequired,
-  onStatusChange: PropTypes.func.isRequired,
-};
 
 export default StatusFilter;

@@ -1,6 +1,8 @@
 // src/App.jsx
 import { BrowserRouter, Routes, Route } from "react-router";
 
+import { CustomerProvider } from "./contexts/CustomerContext.jsx";
+
 import WelcomePage from "./pages/WelcomePage";
 import RootLayout from "./layouts/RootLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -19,28 +21,33 @@ export const API_BASE = "http://localhost:3001";
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        {/* Public */}
-        <Route index element={<WelcomePage />} />
-        <Route path="login" element={<LoginPage />} />
+      <CustomerProvider>
+        <Routes>
+          {/* Public */}
+          <Route index element={<WelcomePage />} />
+          <Route path="login" element={<LoginPage />} />
 
-        {/* Must be logged in */}
-        <Route element={<ProtectedRoute />}>
-          <Route path="app" element={<RootLayout />}>
-            <Route index element={<DashboardPage />} />
-            <Route path="customers" element={<CustomersPage />} />
-            <Route path="customers/:id" element={<CustomerDetailPage />} />
+          {/* Must be logged in */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="app" element={<RootLayout />}>
+              <Route index element={<DashboardPage />} />
+              <Route path="customers" element={<CustomersPage />} />
+              <Route path="customers/:id" element={<CustomerDetailPage />} />
 
-            <Route element={<ProtectedRoute requiredRole={"admin"} />}>
-              <Route path="customers/new" element={<NewCustomerPage />} />
-              <Route path="customers/:id/edit" element={<EditCustomerPage />} />
+              <Route element={<ProtectedRoute requiredRole={"admin"} />}>
+                <Route path="customers/new" element={<NewCustomerPage />} />
+                <Route
+                  path="customers/:id/edit"
+                  element={<EditCustomerPage />}
+                />
+              </Route>
             </Route>
           </Route>
-        </Route>
 
-        {/* 404 */}
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
+          {/* 404 */}
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </CustomerProvider>
     </BrowserRouter>
   );
 }
