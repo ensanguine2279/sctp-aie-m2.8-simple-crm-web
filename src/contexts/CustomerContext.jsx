@@ -29,6 +29,7 @@ export function CustomerProvider({ children }) {
 
   // Independent UI state
   const [statusFilter, setStatusFilter] = useState("all");
+
   const [sortField, setSortField] = useState("");
   const [sortDirection, setSortDirection] = useState("asc"); // "asc" or "desc"
   const [selectedTags, setSelectedTags] = useState([]);

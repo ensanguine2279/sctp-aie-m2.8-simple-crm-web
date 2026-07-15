@@ -66,9 +66,28 @@ function CustomerDetailPage() {
 
   return (
     <div className={styles.panel}>
-      <Link to="/app/customers" className={styles.backLink}>
-        ← Back to Customers
-      </Link>
+      <div>
+        {/* Breadcrumb Trail */}
+        <nav className={styles.breadcrumbNav} aria-label="Breadcrumb">
+          <ol className={styles.breadcrumbs}>
+            <li className={styles.breadcrumbItem}>
+              <Link to="/app/customers">Customers</Link>
+            </li>
+            <li
+              className={`${styles.breadcrumbItem} ${styles.breadcrumbSeparator}`}
+              aria-hidden="true"
+            >
+              &gt;
+            </li>
+            <li
+              className={`${styles.breadcrumbItem} ${styles.breadcrumbCurrent}`}
+              aria-current="page"
+            >
+              {customer.firstName} {customer.lastName}
+            </li>
+          </ol>
+        </nav>
+      </div>
 
       <div className={styles.panelHead}>
         <div>
