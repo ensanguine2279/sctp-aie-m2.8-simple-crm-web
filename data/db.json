@@ -2,7 +2,7 @@
   "customers": [
     {
       "id": "c1",
-      "firstName": "Sarah",
+      "firstName": "Sarah222",
       "lastName": "Chen777",
       "email": "sarah.chen@email.com",
       "phone": "+65 9123 4567",
@@ -85,6 +85,36 @@
       "notes": "",
       "createdAt": "2026-07-14",
       "id": "_o7KohksjGo"
+    },
+    {
+      "firstName": "aaacccc",
+      "lastName": "sadsad",
+      "email": "sadad@asd.mm",
+      "phone": "3424342",
+      "company": "sadsadsad",
+      "notes": "qweqweqqwe",
+      "status": "active",
+      "tags": [
+        "VIP"
+      ],
+      "createdAt": "2026-07-15",
+      "id": "SY6idAU9vSM"
+    },
+    {
+      "firstName": "aaa",
+      "lastName": "bbb",
+      "email": "ccc@ddd.eee",
+      "phone": "fff",
+      "company": "ggg",
+      "notes": "hhhh",
+      "status": "inactive",
+      "tags": [
+        "VIP",
+        "Lead",
+        "Referral"
+      ],
+      "createdAt": "2026-07-15",
+      "id": "G7NPp92g45g"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
