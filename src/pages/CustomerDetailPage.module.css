@@ -151,3 +151,43 @@
 .deleteButton:hover {
   background: var(--danger-50, #f9eeed);
 }
+
+/* Breadcrumb Container */
+.breadcrumbNav {
+  margin-bottom: var(
+    --space-3
+  ); /* Reusing your design variables if preferred */
+}
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--space-4) 0;
+  font-size: var(--text-sm);
+}
+
+/* Interacting link styles inside the item */
+.breadcrumbItem a {
+  color: var(--primary-600);
+  text-decoration: none;
+  font-weight: var(--weight-medium);
+}
+
+.breadcrumbItem a:hover {
+  text-decoration: underline;
+}
+
+/* Separator styling (>) */
+.breadcrumbSeparator {
+  margin: 0 var(--space-2);
+  color: var(--text-muted);
+  user-select: none;
+}
+
+/* Current page non-link styling */
+.breadcrumbCurrent {
+  color: var(--text-body);
+  font-weight: var(--weight-normal);
+}
