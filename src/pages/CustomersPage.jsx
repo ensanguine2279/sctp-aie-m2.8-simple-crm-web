@@ -1,5 +1,6 @@
 // src/pages/CustomersPage.jsx
-import { Link, useNavigate } from "react-router";
+import { useEffect } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router";
 
 import { useAuth } from "../contexts/AuthContextInstance";
 import { useCustomers } from "../contexts/CustomerContextInstance";
@@ -10,11 +11,84 @@ import StatusFilter from "../components/StatusFilter";
 import Spinner from "../components/Spinner";
 
 function CustomersPage() {
-  const { filteredCustomers, loading, error, searchTerm } = useCustomers();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   const { hasRole } = useAuth();
+  const { filteredCustomers, loading, error, searchTerm, setSearchTerm } =
+    useCustomers();
 
-  const navigate = useNavigate();
+  // Constants for pagination configurations
+  const ITEMS_PER_PAGE = 7;
+
+  // Read the raw page from the URL. Default to page 1 if not present or invalid.
+  const rawPage = searchParams.get("page");
+
+  const currentPage = parseInt(rawPage || "1", 10);
+
+  // Calculate total pages based on your filtered results
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredCustomers.length / ITEMS_PER_PAGE),
+  );
+
+  // Correct the URL if someone manually types an invalid page number
+  useEffect(() => {
+    // Skip checking while data is still loading from the API
+    if (loading) return;
+
+    let validatedPage = currentPage;
+
+    // Fix NaN, zero, or negative numbers typed into the URL
+    if (isNaN(currentPage) || currentPage < 1) {
+      validatedPage = 1;
+    }
+    // Fix numbers that exceed our max page count
+    else if (currentPage > totalPages) {
+      validatedPage = totalPages;
+    }
+
+    // If the URL value is wrong or missing entirely (?page= is empty)
+    if (validatedPage !== currentPage || !rawPage) {
+      const currentParams = Object.fromEntries(searchParams.entries());
+      setSearchParams(
+        { ...currentParams, page: validatedPage.toString() },
+        { replace: true }, // Use 'replace' so it doesn't clutter their back-button history
+      );
+    }
+  }, [
+    rawPage,
+    currentPage,
+    totalPages,
+    loading,
+    searchParams,
+    setSearchParams,
+  ]);
+
+  // Slice the customers array to only display the current page chunk
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const paginatedCustomers = filteredCustomers.slice(startIndex, endIndex);
+
+  // Helper function to change pages while maintaining other search params (like search term)
+  const handlePageChange = (newPageNumber) => {
+    const currentParams = Object.fromEntries(searchParams.entries());
+    setSearchParams({
+      ...currentParams,
+      page: newPageNumber,
+    });
+  };
+
+  // Whenever a user types a new search query, reset them back to page 1 safely
+  const handleSearchChange = (newTerm) => {
+    setSearchTerm(newTerm); // This updates URL search text via context
+    // Explicitly overwrite or clear the page param to avoid empty view offsets
+    if (newTerm) {
+      setSearchParams({ search: newTerm, page: "1" });
+    } else {
+      setSearchParams({ page: "1" });
+    }
+  };
 
   if (loading) return <Spinner />;
   if (error) return <p className="status-message error">Error: {error}</p>;
@@ -43,15 +117,54 @@ function CustomersPage() {
               : "No customers yet."}
           </p>
         ) : (
-          <div className="customers">
-            {filteredCustomers.map((customer) => (
-              <CustomerCard
-                key={customer.id}
-                customer={customer}
-                onSelect={(id) => navigate(`/app/customers/${id}`)}
-                searchTerm={searchTerm}
-              />
-            ))}
+          <div>
+            <div className="customers">
+              {paginatedCustomers.map((customer) => (
+                <CustomerCard
+                  key={customer.id}
+                  customer={customer}
+                  onSelect={(id) => navigate(`/app/customers/${id}`)}
+                  searchTerm={searchTerm}
+                />
+              ))}
+            </div>
+
+            <div
+              className="pagination-bar"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "16px",
+                marginTop: "20px",
+              }}
+            >
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                style={{
+                  padding: "6px 12px",
+                  cursor: currentPage === 1 ? "not-allowed" : "pointer",
+                }}
+              >
+                Previous
+              </button>
+
+              <span className="pagination-indicator">
+                Page {currentPage} of {totalPages}
+              </span>
+
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                style={{
+                  padding: "6px 12px",
+                  cursor:
+                    currentPage === totalPages ? "not-allowed" : "pointer",
+                }}
+              >
+                Next
+              </button>
+            </div>
           </div>
         )}
       </div>
